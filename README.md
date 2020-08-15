@@ -1,0 +1,1 @@
+Contained within this repo are files that contian my exercises and explanations of what each exercise is achieving this way I have something to reference in the future. I have been spending a decent amount of time on these to make sure I am understanding the uses of different methods and code logic so I wanted the work to be shown here.
