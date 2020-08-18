@@ -96,3 +96,150 @@ const messageReducer = (state = [], action) => {
 }
 
 const store = Redux.createStore(messageReducer);
+
+//* 4: Use Provider to Connect Redux to React
+/*
+The code editor now shows all your Redux and React code from the past several challenges. It includes the Redux store, actions, and the DisplayMessages component. The only new piece is the AppWrapper component at the bottom. Use this top level component to render the Provider from ReactRedux, and pass the Redux store as a prop. Then render the DisplayMessages component as a child. Once you are finished, you should see your React component rendered to the page.
+*/
+
+// Redux Code:
+const ADD = 'ADD';
+
+const addMessage = (message) => {
+  return {
+    type: ADD,
+    message
+  }
+};
+
+const messageReducer = (state = [], action) => {
+  switch (action.type) {
+    case ADD:
+      return [
+        ...state,
+        action.message
+      ];
+    default:
+      return state;
+  }
+};
+
+
+
+const store = Redux.createStore(messageReducer);
+
+// React Code:
+class DisplayMessages extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      input: '',
+      messages: []
+    }
+
+    this.handleChange = this.handleChange.bind(this);
+    this.submitMessage = this.submitMessage.bind(this);
+    
+  }
+
+  handleChange(event) {
+    this.setState({
+      input: event.target.value
+    });
+  }
+
+  submitMessage() {  
+    this.setState((state) => {
+      const currentMessage = state.input;
+      return {
+        input: '',
+        messages: state.messages.concat(currentMessage)
+      };
+    });
+  }
+
+  render() {
+    return (
+      <div>
+        <h2>Type in a new Message:</h2>
+
+        <input
+          value={this.state.input}
+          onChange={this.handleChange}/><br/>
+
+        <button onClick={this.submitMessage}>Submit</button>
+
+        <ul>
+          {this.state.messages.map( (message, idx) => {
+              return (
+                 <li key={idx}>{message}</li>
+              )
+            })
+          }
+        </ul>
+
+      </div>
+    );
+  }
+};
+
+const Provider = ReactRedux.Provider;
+
+class AppWrapper extends React.Component {
+  
+  render() {
+    return (
+      <Provider store={store}>
+        <DisplayMessages />
+      </Provider>
+    )
+  }
+  
+};
+
+//* 5: Map State to Props
+/*
+Create a function mapStateToProps(). This function should take state as an argument, then return an object which maps that state to specific property names. These properties will become accessible to your component via props. Since this example keeps the entire state of the app in a single array, you can pass that entire state to your component. Create a property messages in the object that's being returned, and set it to state.
+*/
+
+const state = [];
+
+const mapStateToProps = (state) => {
+    return {messages: state}
+}
+
+//* 6: Map Dispatch to Props
+/*
+The mapDispatchToProps() function is used to provide specific action creators to your React components so they can dispatch actions against the Redux store. It's similar in structure to the mapStateToProps() function you wrote in the last challenge. It returns an object that maps dispatch actions to property names, which become component props. However, instead of returning a piece of state, each property returns a function that calls dispatch with an action creator and any relevant action data. You have access to this dispatch because it's passed in to mapDispatchToProps() as a parameter when you define the function, just like you passed state to mapStateToProps(). Behind the scenes, React Redux is using Redux's store.dispatch() to conduct these dispatches with mapDispatchToProps(). This is similar to how it uses store.subscribe() for components that are mapped to state.
+
+For example, you have a loginUser() action creator that takes a username as an action payload. The object returned from mapDispatchToProps() for this action creator would look something like:
+
+{
+  submitLoginUser: function(username) {
+    dispatch(loginUser(username));
+  }
+}
+
+The code editor provides an action creator called addMessage(). Write the function mapDispatchToProps() that takes dispatch as an argument, then returns an object. The object should have a property submitNewMessage set to the dispatch function, which takes a parameter for the new message to add when it dispatches addMessage().
+*/
+
+const addMessage = (message) => {
+  return {
+    type: 'ADD',
+    message: message
+  }
+};
+
+const mapDispatchToProps = (dispatch) => {
+
+  return {
+
+    submitNewMessage: (message) => {
+
+      dispatch(addMessage(message))
+
+    }
+
+  }
+  
+}
